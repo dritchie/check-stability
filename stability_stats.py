@@ -9,8 +9,10 @@ def stability_stats(input_dir, output_file):
     for entry in os.listdir(input_dir):
         base, ext = os.path.splitext(entry)
         if ext == '.obj':
+            print(f'Checking stability of {entry}...')
             is_stable = check_stability(f'{input_dir}/{entry}')
             data.append([entry, int(is_stable)])
+    print('DONE')
     df = pd.DataFrame(data, columns = ['Object Filename', 'Is Stable'])
     print(df.mean())
     df.to_csv(output_file, index=False)
