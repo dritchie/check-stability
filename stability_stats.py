@@ -4,18 +4,17 @@ import os
 import pandas as pd
 
 
-def stability_stats(input_dir, output_file):
+def stability_stats(input_dir):
     data = []
+    print(f'Checking stability of objects in {input_dir}')
     for entry in os.listdir(input_dir):
         base, ext = os.path.splitext(entry)
         if ext == '.obj':
-            print(f'Checking stability of {entry}...')
+            print(f'   Checking stability of {entry}...')
             is_stable = check_stability(f'{input_dir}/{entry}')
             data.append([entry, int(is_stable)])
     print('DONE')
-    df = pd.DataFrame(data, columns = ['Object Filename', 'Is Stable'])
-    print(df.mean())
-    df.to_csv(output_file, index=False)
+    return pd.DataFrame(data, columns = ['Object Filename', 'Is Stable'])
 
 
 if __name__ == '__main__':
@@ -25,4 +24,6 @@ if __name__ == '__main__':
     # Path to output CSV file where results will be written
     parser.add_argument('--output-file', type=str, default='stability_stats.csv')
     args = parser.parse_args()
-    stability_stats(args.input_dir, args.output_file)
+    df = stability_stats(args.input_dir, args.output_file)
+    df.to_csv(output_file, index=False)
+    print(df.mean(), df.sem())
