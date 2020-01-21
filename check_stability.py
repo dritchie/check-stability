@@ -1,4 +1,5 @@
 import argparse
+from check_rooted import check_rooted
 import numpy as np
 from obj2urdf import obj2urdf
 import pybullet as p
@@ -7,6 +8,11 @@ import shutil
 import time
 
 def check_stability(input_file, gui=False):
+    # First, check if the file is even rooted.
+    # If it's not rooted, it can't be stable
+    if not check_rooted(input_file):
+        return False
+
     # Start up the simulation
     mode = p.GUI if gui else p.DIRECT
     physicsClient = p.connect(mode)

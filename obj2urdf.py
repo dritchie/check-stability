@@ -6,7 +6,7 @@ from trimesh.collision import CollisionManager
 import xml.etree.ElementTree as xml
 
 
-def obj2urdf(input_file, output_dir, scale=1, density=1, collision_dist=1e-3):
+def obj2urdf(input_file, output_dir, scale=1, density=1, collision_dist=5e-3):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -44,14 +44,14 @@ def obj2urdf(input_file, output_dir, scale=1, density=1, collision_dist=1e-3):
     # Build a directed tree by DFS
     root = {'id': 0, 'children': []}
     fringe = [root]
-    visited = set([])
+    visited = set([root['id']])
     while len(fringe) > 0:
         node = fringe.pop()
-        visited.add(node['id'])
         for neighbor in adjacencies[node['id']]:
             if not (neighbor in visited):
                 child_node = {'id': neighbor, 'children': []}
                 node['children'].append(child_node)
+                visited.add(child_node['id'])
                 fringe.append(child_node)
 
     # Write out the URDF file
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     # Writes its output to a directory containing the URDF and all the part meshes
     parser.add_argument('--output-dir', type=str, required=True)
     # Optional collision distance threshold
-    parser.add_argument('--collision-dist', type=float, default=1e-3)
+    parser.add_argument('--collision-dist', type=float, default=5e-3)
     # Optional material density
     parser.add_argument('--density', type=float, default=1)
     # Optional uniform scale to apply to the entire object
