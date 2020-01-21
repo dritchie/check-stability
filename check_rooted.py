@@ -29,7 +29,9 @@ def check_rooted(input_file):
     comps.insert(0, ground)
 
     # Detect (approximate) intersections between parts
-    collision_dist = 0.005 * mesh.scale
+    # collision_dist = 0.005 * mesh.scale
+    # collision_dist = 0.01 * mesh.scale
+    collision_dist = 0.02 * mesh.scale
     adjacencies = {comp_index : [] for comp_index in range(len(comps))}
     manager = CollisionManager()
     for i in range(len(comps)-1):

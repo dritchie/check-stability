@@ -21,7 +21,9 @@ def obj2urdf(input_file, output_dir, density=1):
     comps = mesh.split().tolist()
 
     # Detect (approximate) intersections between parts, to use for building joints
-    collision_dist = 0.005 * mesh.scale
+    # collision_dist = 0.005 * mesh.scale
+    # collision_dist = 0.01 * mesh.scale
+    collision_dist = 0.02 * mesh.scale
     adjacencies = {comp_index : [] for comp_index in range(len(comps))}
     manager = CollisionManager()
     for i in range(len(comps)-1):
