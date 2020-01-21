@@ -5,7 +5,7 @@ from trimesh.collision import CollisionManager
 from trimesh.creation import box
 
 
-def check_rooted(input_file, collision_dist=1e-3):
+def check_rooted(input_file):
     # Load up the mesh
     mesh = tm.load(input_file)
     # Switch from y-up to z-up
@@ -29,6 +29,7 @@ def check_rooted(input_file, collision_dist=1e-3):
     comps.insert(0, ground)
 
     # Detect (approximate) intersections between parts
+    collision_dist = 0.005 * mesh.scale
     adjacencies = {comp_index : [] for comp_index in range(len(comps))}
     manager = CollisionManager()
     for i in range(len(comps)-1):
@@ -56,7 +57,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Check if an OBJ object is "rooted" (i.e. there exists a path from the ground to all parts)')
     # Path to input OBJ file
     parser.add_argument('--input-file', type=str, required=True)
-    # Optional collision distance threshold
-    parser.add_argument('--collision-dist', type=float, default=1e-3)
     args = parser.parse_args()
-    print(check_rooted(args.input_file, args.collision_dist))
+    print(check_rooted(args.input_file))

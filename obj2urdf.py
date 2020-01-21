@@ -8,7 +8,7 @@ from trimesh.util import concatenate as meshconcat
 import xml.etree.ElementTree as xml
 
 
-def obj2urdf(input_file, output_dir, density=1, collision_dist=5e-3):
+def obj2urdf(input_file, output_dir, density=1):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -21,6 +21,7 @@ def obj2urdf(input_file, output_dir, density=1, collision_dist=5e-3):
     comps = mesh.split().tolist()
 
     # Detect (approximate) intersections between parts, to use for building joints
+    collision_dist = 0.005 * mesh.scale
     adjacencies = {comp_index : [] for comp_index in range(len(comps))}
     manager = CollisionManager()
     for i in range(len(comps)-1):
@@ -150,9 +151,7 @@ if __name__ == '__main__':
     parser.add_argument('--input-file', type=str, required=True)
     # Writes its output to a directory containing the URDF and all the part meshes
     parser.add_argument('--output-dir', type=str, required=True)
-    # Optional collision distance threshold
-    parser.add_argument('--collision-dist', type=float, default=5e-3)
     # Optional material density
     parser.add_argument('--density', type=float, default=1)
     args = parser.parse_args()
-    obj2urdf(args.input_file, args.output_dir, args.density, args.collision_dist)
+    obj2urdf(args.input_file, args.output_dir, args.density)
