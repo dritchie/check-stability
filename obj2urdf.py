@@ -135,8 +135,12 @@ def obj2urdf(input_file, output_dir, density=1):
                 fringe.append(child_node)
 
         # Save URDF file to disk
-        with open(f'{output_dir}/assembly_{i}.urdf', 'wb') as f:
-            f.write(xml.tostring(urdf_root))
+        # Have to make sure to split it into multiple lines, otherwise Bullet's URDF parser will
+        #    throw an error trying to load really large files as a single line...
+        xmlstring = xml.tostring(urdf_root, encoding='unicode')
+        xmlstring = '>\n'.join(xmlstring.split('>'))
+        with open(f'{output_dir}/assembly_{i}.urdf', 'w') as f:
+            f.write(xmlstring)
 
     # Write the parts to disk as STL files for the URDF to refer to
     for i,comp in enumerate(comps):
